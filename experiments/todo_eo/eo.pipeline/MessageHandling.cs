@@ -5,11 +5,11 @@ using eventstore;
 
 namespace eo.pipeline
 {
-    public class MessageHandling {
+    public class MessageHandling : IDisposable {
         private class Handlers {
-            public Func<Message, IMessageContext> Load;
+            public Func<Message, IMessageContext> LoadContext;
             public Func<Message,IMessageContext,Output> Process;
-            public Action<Event[]> Update;
+            public Action<Event[]> UpdateContext;
         }
 
         private readonly Dictionary<Type, Handlers> _map = new Dictionary<Type, Handlers>();
@@ -17,7 +17,9 @@ namespace eo.pipeline
         private readonly EventStore _es;
 
 
-        public MessageHandling(EventStore es) => _es = es;
+        public MessageHandling(EventStore es) {
+            _es = es;
+        }
 
 
         public void Register<TMessage>(IContextManagement ctxManagement, IMessageProcessor processor)
@@ -28,37 +30,38 @@ namespace eo.pipeline
                                        Action<Event[]> update)
         {
             _map[typeof(TMessage)] = new Handlers {
-                                         Load = load,
+                                         LoadContext = load,
                                          Process = process,
-                                         Update = update
+                                         UpdateContext = update
                                      };
         }
 
 
-        public Message Handle(Message msg) {
-            var handlers = _map[msg.GetType()];
-            return Handle(msg, handlers, _es);
+        public Message Handle(Message message) {
+            var handlers = _map[message.GetType()];
+            return Handle(message, handlers, _es);
         }
         
-        private Message Handle(Message msg, Handlers handlers, EventStore es) {
-            var context = handlers.Load(msg);
-            
-            var output = handlers.Process(msg, context);
-            
+        private Message Handle(Message message, Handlers handlers, EventStore es) {
+            var context = handlers.LoadContext(message);
+            var output = handlers.Process(message, context);
             es.Record(output.Events);
             UpdateContexts(output.Events);
+            HandleCommands();
+            return output.Message;
             
-            HandleMany(output.Commands);
             
-            return output.Outgoing;
-        }
-
-        void UpdateContexts(Event[] events) {
-            foreach (var update in _map.Values.ToList().Select(handlers => handlers.Update))
-                update(events);
+            void HandleCommands() 
+                => output.Commands.ToList().ForEach(cmd => Handle(cmd));
         }
         
-        void HandleMany(IEnumerable<Command> commands) 
-            => commands.ToList().ForEach(cmd => Handle(cmd));
+        
+        private void UpdateContexts(Event[] events) {
+            foreach (var update in _map.Values.ToList().Select(handlers => handlers.UpdateContext))
+                update(events);
+        }
+
+        
+        public void Dispose() {}
     }
 }

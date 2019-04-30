@@ -77,9 +77,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="adapters" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\eo.pipeline\eo.pipeline.csproj">
       <Project>{3249b3b8-5d92-427a-9a43-19b292683309}</Project>
       <Name>eo.pipeline</Name>

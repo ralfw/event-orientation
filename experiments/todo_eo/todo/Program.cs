@@ -19,41 +19,43 @@ namespace todo
         {
             if (Directory.Exists("eventstore")) Directory.Delete("eventstore", true);
             
-            var es = new EventStore("eventstore");
-            var mh = new MessageHandling(es);
-            
-            mh.Register<CreateListCommand>(new CreateListContextManagement(es), new CreateListProcessor());
-            mh.Register<CreateTodoCommand>(new CreateTodoContextManagement(es), new CreateTodoProcessor());
-            mh.Register<ListsQuery>(new ListsContextManagement(es), new ListsProcessor());
-            mh.Register<TasksQuery>(new TasksContextManagement(es), new TasksProcessor());
-            mh.Register<TasksInListQuery>(new TasksInListContextManagement(es), new TasksInListProcessor());
-            
-            
-            // Use Case
-            mh.Handle(new CreateListCommand{Name = "Heute"});
+            using(var es = new EventStore("eventstore"))
+            using (var mh = new MessageHandling(es))
+            {
 
-            var result = mh.Handle(new ListsQuery());
-            var listId = ((ListsQueryResult) result).Lists.First().Id;
-            
-            mh.Handle(new CreateTodoCommand{Subject = "Aufräumen", ListId = listId});
-            mh.Handle(new CreateTodoCommand{Subject = "Einkaufen", ListId = listId});
-            
-            result = mh.Handle(new TasksInListQuery{ListId = listId});
-            foreach(var t in ((TasksInListQueryResult)result).Tasks)
-                Console.WriteLine($"{t.Id}: {t.Subject}");
-            
-            
-            mh.Handle(new CreateListCommand{Name = "Einkaufsliste"});
-            result = mh.Handle(new ListsQuery());
-            listId = ((ListsQueryResult) result).Lists.First(l => l.Name == "Einkaufsliste").Id;
+                mh.Register<CreateListCommand>(new CreateListContextManagement(es), new CreateListProcessor());
+                mh.Register<CreateTodoCommand>(new CreateTodoContextManagement(es), new CreateTodoProcessor());
+                mh.Register<ListsQuery>(new ListsContextManagement(es), new ListsProcessor());
+                mh.Register<TasksQuery>(new TasksContextManagement(es), new TasksProcessor());
+                mh.Register<TasksInListQuery>(new TasksInListContextManagement(es), new TasksInListProcessor());
 
-            mh.Handle(new CreateTodoCommand {Subject = "Kartoffeln", ListId = listId});
-            mh.Handle(new CreateTodoCommand {Subject = "Zwiebeln", ListId = listId});
-            mh.Handle(new CreateTodoCommand {Subject = "Käse", ListId = listId});
-            
-            result = mh.Handle(new TasksInListQuery{ListId = listId});
-            foreach(var t in ((TasksInListQueryResult)result).Tasks)
-                Console.WriteLine($"{t.Id}: {t.Subject}");
+
+                // Use Case
+                mh.Handle(new CreateListCommand {Name = "Heute"});
+
+                var result = mh.Handle(new ListsQuery());
+                var listId = ((ListsQueryResult) result).Lists.First().Id;
+
+                mh.Handle(new CreateTodoCommand {Subject = "Aufräumen", ListId = listId});
+                mh.Handle(new CreateTodoCommand {Subject = "Einkaufen", ListId = listId});
+
+                result = mh.Handle(new TasksInListQuery {ListId = listId});
+                foreach (var t in ((TasksInListQueryResult) result).Tasks)
+                    Console.WriteLine($"{t.Id}: {t.Subject}");
+
+
+                mh.Handle(new CreateListCommand {Name = "Einkaufsliste"});
+                result = mh.Handle(new ListsQuery());
+                listId = ((ListsQueryResult) result).Lists.First(l => l.Name == "Einkaufsliste").Id;
+
+                mh.Handle(new CreateTodoCommand {Subject = "Kartoffeln", ListId = listId});
+                mh.Handle(new CreateTodoCommand {Subject = "Zwiebeln", ListId = listId});
+                mh.Handle(new CreateTodoCommand {Subject = "Käse", ListId = listId});
+
+                result = mh.Handle(new TasksInListQuery {ListId = listId});
+                foreach (var t in ((TasksInListQueryResult) result).Tasks)
+                    Console.WriteLine($"{t.Id}: {t.Subject}");
+            }
         }
     }
 }
