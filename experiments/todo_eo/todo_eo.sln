@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "todo", "todo\todo.csproj", "{5400F218-6532-48D5-934F-8AE9CEFAEC37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eventstore", "eventstore\eventstore.csproj", "{935C8512-73D7-45CF-AA7D-C4A0477E4054}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eo.pipeline", "eo.pipeline\eo.pipeline.csproj", "{3249B3B8-5D92-427A-9A43-19B292683309}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5400F218-6532-48D5-934F-8AE9CEFAEC37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5400F218-6532-48D5-934F-8AE9CEFAEC37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5400F218-6532-48D5-934F-8AE9CEFAEC37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5400F218-6532-48D5-934F-8AE9CEFAEC37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{935C8512-73D7-45CF-AA7D-C4A0477E4054}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{935C8512-73D7-45CF-AA7D-C4A0477E4054}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{935C8512-73D7-45CF-AA7D-C4A0477E4054}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{935C8512-73D7-45CF-AA7D-C4A0477E4054}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3249B3B8-5D92-427A-9A43-19B292683309}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3249B3B8-5D92-427A-9A43-19B292683309}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3249B3B8-5D92-427A-9A43-19B292683309}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3249B3B8-5D92-427A-9A43-19B292683309}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
