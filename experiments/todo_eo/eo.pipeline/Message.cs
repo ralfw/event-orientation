@@ -1,10 +1,15 @@
 namespace eo.pipeline
 {
-    public class Message {}
+    public interface Message {}
+    
+    public interface Incoming : Message {}
+    public interface Outgoing : Message {}
     
     
-    public class Request : Message {}
-    public class Response : Message {}
+    public interface Request : Incoming {}
+    public interface Response : Outgoing {}
+    
+    public class Notification : Incoming, Outgoing {}
     
     
     public class Command : Request {}
